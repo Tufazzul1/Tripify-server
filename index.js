@@ -37,6 +37,11 @@ async function run() {
         res.send(result)
     })
 
+    app.get('/spots', async (req,res)=>{
+        const result = await spotsCollection.find().toArray();
+        res.send(result)
+    })
+
     app.get('/myList/:email', async(req, res) =>{
         console.log(req.params.email)
         const result = await  spotsCollection.find({email:req.params.email}).toArray();
