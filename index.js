@@ -6,7 +6,9 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 // Middleware 
-app.use(cors());
+app.use(cors({
+    origin: ["http://localhost:5173", "https://tripify-auth-536be.web.app/"]
+}));
 app.use(express.json());
 
 
@@ -25,7 +27,7 @@ const client = new MongoClient(uri, {
 async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
-        await client.connect();
+        // await client.connect();
 
         const spotsCollection = client.db("spotData").collection("spots");
 
@@ -95,8 +97,8 @@ async function run() {
 
 
         // Send a ping to confirm a successful connection
-        await client.db("admin").command({ ping: 1 });
-        console.log("Pinged your deployment. You successfully connected to MongoDB!");
+        // await client.db("admin").command({ ping: 1 });
+        // console.log("Pinged your deployment. You successfully connected to MongoDB!");
     } finally {
         // Ensures that the client will close when you finish/error
         // await client.close();
