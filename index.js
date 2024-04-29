@@ -15,56 +15,92 @@ console.log(uri)
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true,
-  }
+    serverApi: {
+        version: ServerApiVersion.v1,
+        strict: true,
+        deprecationErrors: true,
+    }
 });
 
 async function run() {
-  try {
-    // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    try {
+        // Connect the client to the server	(optional starting in v4.7)
+        await client.connect();
 
-    const spotsCollection  = client.db("spotData").collection("spots");
-
-
-    app.post('/spots', async(req, res) =>{
-        const spots = req.body; 
-        console.log(spots)
-        const result = await  spotsCollection.insertOne(spots);
-        res.send(result)
-    })
-
-    app.delete('/spots/:id', async(req, res) =>{
-        const id = req.params.id;
-        const query = {_id:  new ObjectId(id)};
-        const result = await spotsCollection.deleteOne(query);
-        res.send(result)
-    })
-
-    app.get('/spots', async (req,res)=>{
-        const result = await spotsCollection.find().toArray();
-        res.send(result)
-    })
-
-    app.get('/myList/:email', async(req, res) =>{
-        console.log(req.params.email)
-        const result = await  spotsCollection.find({email:req.params.email}).toArray();
-        res.send(result)
-    })
+        const spotsCollection = client.db("spotData").collection("spots");
 
 
+        app.post('/spots', async (req, res) => {
+            const spots = req.body;
+            console.log(spots)
+            const result = await spotsCollection.insertOne(spots);
+            res.send(result)
+        })
+
+        app.put('/update/:id', async (req, res) => {
+            console.log(req.params.name)
+            const query = { _id: new ObjectId(req.params.id)}
+            const data = {
+                $set: {
+                    name: req.body.name,
+                    CName: req.body.CName,
+                    location: req.body.location,
+                    photo: req.body.photo,
+                    cost: req.body.cost,
+                    seasonality: req.body.seasonality,
+                    visitor: req.body.visitor,
+                    time: req.body.time,
+                    description: req.body.description
+                }
+            }
+            const result = await  spotsCollection.updateOne(query, data)
+            console.log(result)
+            res.send(result)
+        })
 
 
-    // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
-    console.log("Pinged your deployment. You successfully connected to MongoDB!");
-  } finally {
-    // Ensures that the client will close when you finish/error
-    // await client.close();
-  }
+        app.delete('/spots/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await spotsCollection.deleteOne(query);
+            res.send(result)
+        })
+
+        app.get('/spots/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await spotsCollection.findOne(query);
+            res.send(result)
+        });
+
+        app.get('/singleSpot/:id', async (req, res) => {
+            const id = req.params.id;
+            console.log(id)
+            const result = await spotsCollection.findOne({ _id: new ObjectId(id) })
+            res.send(result)
+        })
+
+        app.get('/spots', async (req, res) => {
+            const result = await spotsCollection.find().toArray();
+            res.send(result)
+        })
+
+        app.get('/myList/:email', async (req, res) => {
+            console.log(req.params.email)
+            const result = await spotsCollection.find({ email: req.params.email }).toArray();
+            res.send(result)
+        })
+
+
+
+
+        // Send a ping to confirm a successful connection
+        await client.db("admin").command({ ping: 1 });
+        console.log("Pinged your deployment. You successfully connected to MongoDB!");
+    } finally {
+        // Ensures that the client will close when you finish/error
+        // await client.close();
+    }
 }
 run().catch(console.dir);
 
@@ -76,5 +112,5 @@ app.get('/', async (req, res) => {
 
 
 app.listen(port, () => {
-    console.log(`Tripify server is running on port: ${port}`); 
+    console.log(`Tripify server is running on port: ${port}`);
 });
