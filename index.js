@@ -6,9 +6,7 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 // Middleware 
-app.use(cors({
-    origin: ["http://localhost:5173", "https://tripify-auth-536be.web.app/"]
-}));
+app.use(cors());
 app.use(express.json());
 
 
@@ -30,7 +28,7 @@ async function run() {
         // await client.connect();
 
         const spotsCollection = client.db("spotData").collection("spots");
-
+        const populerCollection = client.db("spotData").collection("Populerspot")
 
         app.post('/spots', async (req, res) => {
             const spots = req.body;
@@ -84,6 +82,11 @@ async function run() {
 
         app.get('/spots', async (req, res) => {
             const result = await spotsCollection.find().toArray();
+            res.send(result)
+        })
+
+        app.get('/populer', async(req, res) => {
+            const result = await populerCollection.find().toArray();
             res.send(result)
         })
 
