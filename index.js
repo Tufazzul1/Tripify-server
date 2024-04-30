@@ -29,6 +29,7 @@ async function run() {
 
         const spotsCollection = client.db("spotData").collection("spots");
         const populerCollection = client.db("spotData").collection("Populerspot")
+        const blogsCollection = client.db("spotData").collection("Blogs")
 
         app.post('/spots', async (req, res) => {
             const spots = req.body;
@@ -87,6 +88,10 @@ async function run() {
 
         app.get('/populer', async(req, res) => {
             const result = await populerCollection.find().toArray();
+            res.send(result)
+        })
+        app.get('/blogs', async(req, res) => {
+            const result = await blogsCollection.find().toArray();
             res.send(result)
         })
 
