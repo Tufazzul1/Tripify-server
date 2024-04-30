@@ -28,8 +28,9 @@ async function run() {
         // await client.connect();
 
         const spotsCollection = client.db("spotData").collection("spots");
-        const populerCollection = client.db("spotData").collection("Populerspot")
-        const blogsCollection = client.db("spotData").collection("Blogs")
+        const populerCollection = client.db("spotData").collection("Populerspot");
+        const blogsCollection = client.db("spotData").collection("Blogs");
+        const countrysCollection = client.db("spotData").collection("Countrys");
 
         app.post('/spots', async (req, res) => {
             const spots = req.body;
@@ -92,6 +93,10 @@ async function run() {
         })
         app.get('/blogs', async(req, res) => {
             const result = await blogsCollection.find().toArray();
+            res.send(result)
+        })
+        app.get('/countrys', async(req, res) => {
+            const result = await countrysCollection.find().toArray();
             res.send(result)
         })
 
