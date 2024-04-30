@@ -81,6 +81,13 @@ async function run() {
             const result = await spotsCollection.findOne({ _id: new ObjectId(id) })
             res.send(result)
         })
+        
+        app.get('/country/:CName', async (req, res) => {
+            const Cname = req.params.CName;
+            console.log(Cname)
+            const result = await spotsCollection.find({ "CName": Cname }).toArray();
+            res.send(result)
+        })
 
         app.get('/spots', async (req, res) => {
             const result = await spotsCollection.find().toArray();
